@@ -1,0 +1,23 @@
+sudo: required
+language: generic
+
+services:
+  - docker
+
+before_install:
+  - docker build -t bryan/docker-react -f Dockerfile.dev .
+
+script:
+  - docker run -e CI=true bryan/docker-react npm run test
+
+deploy:
+  provider: elasticbeanstalk
+  region: "eu-west-1"
+  app: "Docker-react"
+  env: "Docker-react-env"
+  bucket_name: "elasticbeanstalk-eu-west-1-430307034846"
+  bucket_path: "Docker-react" # same as application name
+  on:
+    branch: main
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
